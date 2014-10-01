@@ -215,7 +215,7 @@ if __name__ == '__main__':
             config.add_subpackage(sub_package)
 
         from numpy.distutils.core import setup
-        setup(**config.todict())
+        setup(**config.todict(), requires=['PIL', 'numpy', 'tabular', 'skdata'])
 
     else:
         setuptools.setup(
