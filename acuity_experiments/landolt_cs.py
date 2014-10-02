@@ -59,9 +59,10 @@ class LandoltCsWithNoise(LandoltCs):
         for rotation in self.rotations:
             for s in self.sizes:
                 for n in self.noise_levels:
-                    records.append((rotation, s, str(rotation)+'_'+str(s)+'_'+str(n), n))
-                    noise_seed += 1
-        return tb.tabarray(records=records, names=['rotation', 's', 'id', 'noise_level'])
+                    for rep in range(20):
+                        records.append((rotation, s, noise_seed, n, noise_seed))
+                        noise_seed += 1
+        return tb.tabarray(records=records, names=['rotation', 's', 'id', 'noise_level', 'noise_seed'])
 
     def get_images(self, preproc):
         m = self.meta
