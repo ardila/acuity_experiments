@@ -49,3 +49,28 @@ class LandoltCs(dt.ImageDatasetBase):
         render_lmap = \
             larray.lmap(self.draw_landolt_c, m['rotation'], m['s'])
         return larray.lmap(dt.ImageLoaderPreprocesser(preproc), render_lmap, range(len(render_lmap)))
+
+class LandoltCsWithNoise(LandoltCs):
+    noise_levels = np.linspace(0, 1, 20)
+
+    def get_meta(self):
+        records = []
+        noise_seed = 0
+        for rotation in self.rotations:
+            for s in self.sizes:
+                for n in self.noise_levels:
+                    records.append((rotation, s, str(rotation)+'_'+str(s)+'_'+str(n), n))
+                    noise_seed += 1
+        return tb.tabarray(records=records, names=['rotation', 's', 'id', 'noise_level'])
+
+    def get_images(self, preproc):
+        m = self.meta
+        render_lmap = \
+            larray.lmap(self.draw_landolt_c, m['rotation'], m['s'])
+        noised_lmap = larray.lmap(self.add_noise, render_lmap, self.meta['noise_level'], self.meta['noise_seed'])
+        return larray.lmap(dt.ImageLoaderPreprocesser(preproc), noised_lmap, range(len(noised_lmap)))
+
+    def add_noise(self, I, noise_level, noise_seed):
+        rng = np.random.RandomState(noise_seed)
+        noise = rng.rand(I.shape[0], I.shape[1], 3) * noise_level
+        return (I/255.+noise)/(float(1+noise_level))
