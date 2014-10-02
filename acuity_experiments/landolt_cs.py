@@ -73,5 +73,5 @@ class LandoltCsWithNoise(LandoltCs):
 
     def add_noise(self, I, noise_level, noise_seed):
         rng = np.random.RandomState(noise_seed)
-        noise = rng.rand(I.shape) * noise_level
+        noise = rng.rand(*I.shape) * noise_level
         return (I/255.+noise)/(float(1+noise_level))
