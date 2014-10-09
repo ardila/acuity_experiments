@@ -51,7 +51,7 @@ class LandoltCs(dt.ImageDatasetBase):
         return larray.lmap(dt.ImageLoaderPreprocesser(preproc), render_lmap, range(len(render_lmap)))
 
 class LandoltCsWithNoise(LandoltCs):
-    noise_levels = np.linspace(0, 1, 20)
+    noise_levels = np.linspace(0, .1, 20)
 
     def get_meta(self):
         records = []
